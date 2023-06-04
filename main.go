@@ -5,6 +5,8 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/cheggaaa/pb/v3"
+	"k8s.io/klog/v2"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -13,8 +15,6 @@ import (
 
 	"github.com/spf13/pflag"
 
-	"github.com/cheggaaa/pb/v3"
-
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -22,8 +22,6 @@ import (
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/klog/v2"
-
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 )
 
@@ -76,6 +74,8 @@ func main() {
 	}
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v", err)
+		fmt.Fprintf(os.Stderr, "--Warning-- Errors were detected during this scan. Resources referenced above were not scanned and should be manually verified.")
+		w.Flush()
 		os.Exit(1)
 	}
 	if *exitErr && sockFound {
